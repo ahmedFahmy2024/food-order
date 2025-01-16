@@ -1,5 +1,5 @@
 "use client";
-import { Pages, Routes } from "@/components/constants/enum";
+import { Pages, Routes } from "@/constants/enum";
 import Link from "@/components/Link/Link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";

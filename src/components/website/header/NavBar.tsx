@@ -1,4 +1,4 @@
-import { Routes } from "@/components/constants/enum";
+import { Routes } from "@/constants/enum";
 import Link from "@/components/Link/Link";
 import NavbarRoutes from "./NavbarRoutes";
 
