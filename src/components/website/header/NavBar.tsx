@@ -1,6 +1,7 @@
 import { Routes } from "@/constants/enum";
 import Link from "@/components/Link/Link";
 import NavbarRoutes from "./NavbarRoutes";
+import CartButton from "./CartButton";
 
 const NavBar = () => {
   return (
@@ -13,6 +14,7 @@ const NavBar = () => {
           🍕 Pizza
         </Link>
         <NavbarRoutes />
+        <CartButton />
       </div>
     </header>
   );
