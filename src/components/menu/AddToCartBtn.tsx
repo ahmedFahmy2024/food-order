@@ -19,9 +19,12 @@ import { Extra, ProductSize, Size } from "@prisma/client";
 import { ProductWithRelations } from "@/types/product";
 import { useStore } from "@/store/store";
 import { useState } from "react";
+import { getItemQuantity } from "@/lib/cart";
 
 const AddToCartBtn = ({ item }: { item: ProductWithRelations }) => {
   const items = useStore((state) => state.items);
+  const addCartItem = useStore((state) => state.addCartItem);
+  const quantity = getItemQuantity(items, item.id);
 
   const defaultSize =
     items.find((i) => i.id === item.id)?.size ||
@@ -42,6 +45,17 @@ const AddToCartBtn = ({ item }: { item: ProductWithRelations }) => {
       totalPrice += extra.price;
     });
   }
+
+  const handleAddToCart = () => {
+    addCartItem({
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      basePrice: item.basePrice,
+      size: selectedSize,
+      extras: selectedExtras,
+    });
+  };
 
   return (
     <Dialog>
@@ -80,9 +94,18 @@ const AddToCartBtn = ({ item }: { item: ProductWithRelations }) => {
           </div>
         </div>
         <DialogFooter>
-          <Button className="w-full" type="submit">
-            Add to Cart {formatCurrency(totalPrice)}
-          </Button>
+          {quantity === 0 ? (
+            <Button onClick={handleAddToCart} className="w-full" type="submit">
+              Add to Cart {formatCurrency(totalPrice)}
+            </Button>
+          ) : (
+            <ChooseQuantity
+              quantity={quantity}
+              item={item}
+              selectedSize={selectedSize}
+              selectedExtras={selectedExtras}
+            />
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -157,3 +180,50 @@ function Extras({
     </div>
   ));
 }
+
+const ChooseQuantity = ({
+  quantity,
+  item,
+  selectedSize,
+  selectedExtras,
+}: {
+  quantity: number;
+  item: ProductWithRelations;
+  selectedSize: Size;
+  selectedExtras: Extra[];
+}) => {
+  const addCartItem = useStore((state) => state.addCartItem);
+  const removeCartItem = useStore((state) => state.removeCartItem);
+  const removeItemFromCart = useStore((state) => state.removeItemFromCart);
+
+  return (
+    <div className="flex items-center flex-col gap-2 mt-4 w-full">
+      <div className="flex items-center justify-center gap-2">
+        <Button variant="outline" onClick={() => removeCartItem(item.id)}>
+          -
+        </Button>
+        <div>
+          <span className="text-black">{quantity} in cart</span>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() =>
+            addCartItem({
+              id: item.id,
+              name: item.name,
+              image: item.image,
+              basePrice: item.basePrice,
+              size: selectedSize,
+              extras: selectedExtras,
+            })
+          }
+        >
+          +
+        </Button>
+      </div>
+      <Button size="sm" onClick={() => removeItemFromCart(item.id)}>
+        Remove
+      </Button>
+    </div>
+  );
+};
