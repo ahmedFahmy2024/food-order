@@ -24,13 +24,15 @@ type CartAction = {
 
 export type CartSlice = CartState & CartAction;
 
+const initialCart = localStorage.getItem("cart");
+
 export const createCartSlice: StateCreator<
   CartSlice,
   [["zustand/immer", never]],
   [],
   CartSlice
 > = (set) => ({
-  items: [],
+  items: initialCart ? JSON.parse(initialCart) : [],
   addCartItem: (newItem: CartItem) => {
     set((state) => {
       const existingItem = state.items.find((item) => item.id === newItem.id);

@@ -6,12 +6,17 @@ import { formatCurrency } from "@/lib/formatters";
 import { useStore } from "@/store/store";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
 
 const CartItems = () => {
   const items = useStore((state) => state.items);
   const removeItemFromCart = useStore((state) => state.removeItemFromCart);
   const subTotal = getSubTotal(items);
   const deliveryFee = 5;
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(items));
+  }, [items]);
 
   return (
     <div>
